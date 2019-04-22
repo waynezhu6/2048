@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <meta charset = "utf-8"> 
+    <meta name = "viewport" content = "width = device-width, user-scalable = 0">  
+    <link href="https://fonts.googleapis.com/css?family=Signika" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet">
+
+    <title>2048</title>
+    
+    <style>
+    
+        html{
+            width: 100vw;
+            height: 100vh;
+            font-size: 0px;
+            -ms-overflow-style: none;
+            overflow: -moz-scrollbars-none;
+            box-sizing: border-box; 
+            user-select: none;
+        }
+
+        html::-webkit-scrollbar { 
+            display: none;
+        }
+
+        *, *:before, *:after {
+          box-sizing: inherit;
+        }
+        
+        body{
+            width: 100vw;
+            height: 100vh;
+            margin: 0px;
+            font-family: 'Fjalla One', sans-serif;
+            background-color: #FAF8EF;
+            overflow: auto;
+            box-sizing: border-box;
+            position: absolute;
+        }
+        
+        #pageContainer{
+            display: block;
+            width: 540px;
+            height: 85%;
+            margin: 5% auto;
+            padding: 20px;
+        }
+        
+        #headContainer{
+            overflow: hidden;
+            width: 500px;
+            padding: 0px 20px;
+        }
+        
+        #gameTitle{
+            display: inline-block;     
+            color: #776E65;
+            font-size: 90px;
+            margin: 0px;
+            float: left;
+        }
+        
+        #score{
+            color: #776E65;
+            font-size: 20px;
+            background-color: #BBADA0;
+            border-radius: 4px;
+            padding: 4px;
+            margin: 0px 0px 0px 10px;
+            vertical-align: top;
+            float: right;
+        }
+        
+        #highScore{
+            color: #776E65;
+            font-size: 20px;
+            background-color: #BBADA0;
+            border-radius: 4px;
+            padding: 4px;
+            margin: 0px 0px 0px 10px; 
+            vertical-align: top;
+            float: right;
+        }
+        
+        #textContainer{
+            margin-top: 3%;
+            width: 500px;
+            padding: 0px 20px;
+        }
+        
+        #descriptionText{
+            display: inline-block;
+            color: #776E85;
+            font-size: 18px;
+            width: 70%;
+            text-align: left;
+            text-align: left;
+        }
+        
+        #newGameButton{
+            font-size: 18px;
+            font-family: 'Signika', sans-serif;
+            background-color: #8F7A66;
+            border: 0px;
+            border-radius: 4px;
+            padding: 4px;
+            margin: 0% 0% 0% 5%;
+            outline: none;
+            color: #FFFFFF;
+            cursor: pointer;
+            width: 25%;
+            vertical-align: top;
+        }
+        
+        #gameContainer{
+            margin-top: 5%;
+            text-align: center;
+            width: 100%;
+        }
+        
+        #tilesContainer{
+            width: 460px;
+            margin: auto;
+            background-color: #BBADA0;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 0px;
+            position: relative;
+        }
+        
+        span{
+            display: inline-block;
+            margin: 14px 14px 0px 0px;
+            width: 97.5px;
+            height: 97.5px;
+            background-color: #CDC1B4;
+            border-radius: 4px;
+        }
+        
+        .right{
+            margin-right: 0px;
+        }
+        
+        .top{
+            margin-top: 0px;
+        }
+        
+        tile{
+            display: inline-block;
+            position: absolute;
+            width: 97.5px;
+            height: 97.5px;
+            margin: 14px 14px 0px 0px;
+            border-radius: 4px;
+            background-color: blue;
+            font-size: 60px;
+            line-height: 97.5px;
+            transition: all 0.15s ease 0s;
+        }
+        
+        .v2{
+            background-color: #EEE4DA;
+            color: #776E65;
+        }
+        
+        .v4{
+            background-color: #EDE0C8;
+            color: #776E65;
+        }
+        
+        .v8{
+            background-color: #F2B179;
+            color: #FFFFFF;
+        }
+        
+        .v16{
+            background-color: #F59563;
+            color: #FFFFFF;
+        }
+        
+        .v32{
+            background-color: #F67C5F;
+            color: #FFFFFF;
+        }
+        
+        .v64{
+            background-color: #F65E3B;
+            color: #FFFFFF;
+        }
+        
+        .v128{
+            background-color: #F3D96B;
+            color: #FFFFFF;
+        }
+        
+        .v256{
+            background-color: #F1D04B;
+            color: #FFFFFF;    
+        }
+        
+        .v512{
+            background-color: #E4C02A;
+            color: #FFFFFF;      
+        }
+        
+        .v1024{
+            background-color: #EDC53F;
+            color: #FFFFFF;
+            font-size: 40px;
+        }
+        
+        .v2048{
+            background-color: #ECC400;
+            color: #FFFFFF;
+            font-size: 40px;
+        }
+        
+        #infoTextContainer{
+            
+        }
+        
+        @media only screen and (max-width: 550px){
+            #pageContainer{
+                width: 300px;
+                width: 300px;
+            }
+            
+            #tilesContainer{
+                width: 260px;
+                padding: 8px;
+            }
+            
+            span{
+                width: 55px;
+                height: 55px;
+                margin: 8px 8px 0px 0px;
+            }
+            
+            tile{
+                width: 55px;
+                height: 55px;
+                font-size: 40px;
+                line-height: 58.75px;
+                margin: 8px 8px 0px 0px;
+            }
+            
+            #gameTitle{
+                font-size: 40px;
+            }
+            
+            #headContainer{
+                width: 260px;
+                padding: 0px;
+                margin-bottom: 20px;
+            }
+            
+            #textContainer{
+                width: 260px;
+                padding: 0px;
+            }
+            
+            #descriptionText{
+                font-size: 17px;
+                width: 150px;
+            }
+            
+            #newGameButton{
+                white-space: nowrap;
+                width: 97px;
+            }
+        }
+        
+    
+    </style>    
+    
+</head>    
+ 
+    
+<body>
+
+    <div id = "pageContainer">
+    
+        <div id = "headContainer">
+            <h1 id = "gameTitle">2048</h1>
+            <p1 id = "highScore">Best</p1>            
+            <p1 id = "score">Score</p1>
+        </div>
+        
+        <div id = "textContainer">
+            <p1 id = "descriptionText">Join the numbers and get to the 2048 tile!</p1>
+            <button id = "newGameButton" onclick = "initializeGame()">New Game</button>
+        </div>
+        <div id = "gameContainer">
+
+            <div id = "tilesContainer">
+            
+                <span class = "top"></span>
+                <span class = "top"></span>
+                <span class = "top"></span>
+                <span class = "right top"></span>
+                <br>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span class = "right"></span>
+                <br>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span class = "right"></span>
+                <br>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span class = "right"></span>
+                
+            </div>
+
+        </div>
+        
+        <div id = "infoTextContainer">
+        
+            <p>HOW TO PLAY: Use your arrow keys to move the tiles. When two tiles with the same number touch, they merge into one!</p>
+            <p>NOTE: The game on this site is a shameless clone. Full credits to Gabriele Cirulli, creator of the OG 2048.</p>
+            
+        </div>
+        
+    </div>
+    
+    <script>
+        
+        var values = [];
+        var gridWidth = 4;
+        var nTiles = 0; 
+        
+        var padding = parseFloat(window.getComputedStyle(document.getElementById("tilesContainer")).getPropertyValue("padding"));
+        console.log(padding);
+        var tileSize = (document.getElementById("tilesContainer").getBoundingClientRect().width - 5 * padding) / 4 + padding;
+        console.log(tileSize);
+        
+        initializeGame();
+        var generated = true;
+        var score = 0;      
+        
+        function initializeGame()
+        {
+            values = [];
+            nTiles = 0;
+            score = 0;
+            
+            var element = document.getElementsByTagName("tile"), index;
+
+            for (i = element.length - 1; i >= 0; i--) 
+            {
+                element[i].parentNode.removeChild(element[i]);
+            }
+            
+            for(var i = 0; i < gridWidth; i++)
+            {
+                values[i] = [];
+                for(var j = 0; j < gridWidth; j++)
+                {
+                    values[i][j] = -1;
+                }
+            }
+            
+            for(var i = 0; i < 2; i++)
+            {
+                var xLoc = Math.round(Math.random() * gridWidth - 0.5);
+                var yLoc = Math.round(Math.random() * gridWidth - 0.5);
+    
+                while(values[yLoc][xLoc] != -1)
+                {
+                    xLoc = Math.round(Math.random() * gridWidth - 0.5);
+                    yLoc = Math.round(Math.random() * gridWidth - 0.5); 
+                }   
+                
+                var tempInt = Math.round(Math.random() - 0.3);
+                
+                if(tempInt == 0)
+                {
+                    values[yLoc][xLoc] = {value: 2, id: nTiles, merged: false};
+                    var newTile = document.createElement("tile");
+                    var node = document.createTextNode("2");
+                    newTile.appendChild(node);                    
+                    newTile.setAttribute("id", nTiles);
+                    newTile.setAttribute("class", "v2");
+                    newTile.style.top = yLoc * tileSize + "px";
+                    newTile.style.left = xLoc * tileSize + padding + "px";
+                    var element = document.getElementById("tilesContainer");
+                    element.appendChild(newTile);
+                    nTiles++;
+                }
+                else if(tempInt == 1)
+                {
+                    values[yLoc][xLoc] = {value: 4, id: nTiles, merged: false};
+                    var newTile = document.createElement("tile");
+                    var node = document.createTextNode("4");
+                    newTile.appendChild(node);
+                    newTile.setAttribute("id", nTiles);
+                    newTile.setAttribute("class", "v4");
+                    newTile.style.top = yLoc * tileSize + "px";
+                    newTile.style.left = xLoc * tileSize + padding + "px";
+                    var element = document.getElementById("tilesContainer");
+                    element.appendChild(newTile);
+                    nTiles++
+                }   
+            }
+        }
+        
+        document.addEventListener('keydown', function(event){
+            console.log(generated);
+            if(event.keyCode == 38|| event.keyCode == 87) //up
+            {
+                userMovement("up");
+            }
+            else if(event.keyCode == 40|| event.keyCode == 83) //down
+            {
+                userMovement("down");
+            }            
+            else if(event.keyCode == 37|| event.keyCode == 65) //left
+            {
+                userMovement("left");
+            } 
+            else if(event.keyCode == 39|| event.keyCode == 68) //right
+            {
+                userMovement("right");
+            } 
+        });
+        
+        var startX = 0;
+        var startY = 0;
+        var distX = 0;
+        var distY = 0;
+        
+        document.getElementById("tilesContainer").addEventListener('touchstart', function(event){
+            var touchObj = event.changedTouches[0];
+            startX = touchObj.pageX;
+            startY = touchObj.pageY;
+            console.log(startX);
+            console.log(startY);
+        });
+        
+        document.getElementById("tilesContainer").addEventListener('touchmove', function(event){
+            event.preventDefault();
+        });        
+        
+        document.getElementById("tilesContainer").addEventListener('touchend', function(event){
+            var touchObj = event.changedTouches[0];
+            distX = touchObj.pageX - startX;
+            distY = touchObj.pageY - startY;
+            
+            if(Math.abs(distX) > Math.abs(distY))
+            {
+                if(distX > 20)
+                {
+                    userMovement("right");
+                }
+                else if(distX < -20)
+                {
+                    userMovement("left");             
+                }
+            }
+            else
+            {
+                if(distY > 20)
+                {
+                    userMovement("down");
+                }
+                else if(distY < -20)
+                {
+                    userMovement("up");
+                }
+            }
+            
+        });        
+        
+        function userMovement(direction)
+        {   
+            if(generated)
+            {
+                var changes = 0;
+                
+                for(var i = 0; i < gridWidth; i++)
+                {
+                    for(var j = 0; j < gridWidth; j++)
+                    {
+                        if(values[i][j] != -1)
+                        {
+                            values[i][j].merged = false;
+                        }
+                    }
+                }
+                
+                if(direction == "up")
+                {
+                    for(var i = 1; i < gridWidth; i++)
+                    {
+
+                        for(var j = 0; j < gridWidth; j++)
+                        {
+                            if(values[i][j] != -1)
+                            {
+                                var nEmpty = 0;
+                                var merged = false;
+
+                                for(k = 1; k <= i; k++)
+                                {
+                                    if(values[i - k][j] == -1)
+                                    {
+                                        nEmpty++;
+                                    }
+                                    else if(values[i - k][j].value == values[i][j].value && values[i - k][j].merged == false)
+                                    {
+                                        values[i - k][j].merged = true;
+                                        document.getElementById(values[i][j].id).style.top = (i - k) * tileSize + "px";
+                                        values[i - k][j].value = values[i - k][j].value * 2;
+                                        mergeElement(values[i][j].id, values[i - k][j].id, values[i - k][j].value);
+                                        values[i][j] = -1;
+                                        merged = true;
+                                        changes++;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
+                                }
+                                if(nEmpty > 0 && !merged)
+                                {
+                                    values[i - nEmpty][j] = values[i][j];
+                                    values[i][j] = -1;
+                                    changes++
+                                    document.getElementById(values[i - nEmpty][j].id).style.top = (i - nEmpty) * tileSize + "px";                                
+                                }
+                            }
+                        }
+                    }
+                }
+                else if(direction == "down")
+                {
+                    for(var i = gridWidth - 1; i >= 0; i = i - 1)
+                    {
+
+                        for(var j = 0; j < gridWidth; j++)
+                        {
+                            if(values[i][j] != -1)
+                            {
+                                var nEmpty = 0;
+                                var merged = false;
+
+                                for(k = 1; k < gridWidth - i; k++)
+                                {
+                                    if(values[i + k][j] == -1)
+                                    {
+                                        nEmpty++;
+                                    }
+                                    else if(values[i + k][j].value == values[i][j].value && values[i + k][j].merged == false)
+                                    {
+                                        values[i + k][j].merged = true;
+                                        document.getElementById(values[i][j].id).style.top = (i + k) * tileSize + "px";
+                                        values[i + k][j].value = values[i + k][j].value * 2;
+                                        mergeElement(values[i][j].id, values[i + k][j].id, values[i + k][j].value);
+                                        values[i][j] = -1;
+                                        merged = true;
+                                        changes++;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
+                                }
+                                if(nEmpty > 0 && !merged)
+                                {
+                                    values[i + nEmpty][j] = values[i][j];
+                                    values[i][j] = -1;
+                                    changes++;
+                                    document.getElementById(values[i + nEmpty][j].id).style.top = (i + nEmpty) * tileSize + "px";                                
+                                }
+                            }
+                        }
+                    }                
+                }
+                else if(direction == "left")
+                {
+
+                    for(var i = 0; i < gridWidth; i++)
+                    {
+
+                        for(var j = 1; j < gridWidth; j++)
+                        {
+
+                            if(values[i][j] != -1)
+                            {
+                                var nEmpty = 0;
+                                var merged = false;
+
+                                for(k = 1; k <= j; k++)
+                                {
+                                    if(values[i][j - k] == -1)
+                                    {
+                                        nEmpty++;
+                                    }
+                                    else if(values[i][j - k].value == values[i][j].value && values[i][j - k].merged == false)
+                                    {
+                                        values[i][j - k].merged = true;
+                                        document.getElementById(values[i][j].id).style.left = (j - k) * tileSize + padding + "px";
+                                        values[i][j - k].value = values[i][j - k].value * 2;
+                                        mergeElement(values[i][j].id, values[i][j - k].id, values[i][j - k].value);
+                                        values[i][j] = -1;
+                                        merged = true;
+                                        changes++;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
+                                }
+                                if(nEmpty > 0 && !merged)
+                                {
+                                    values[i][j - nEmpty] = values[i][j];
+                                    values[i][j] = -1;
+                                    changes++;
+                                    document.getElementById(values[i][j - nEmpty].id).style.left = (j - nEmpty) * tileSize + padding + "px";                            
+                                }
+                            }
+                        }
+                    }                
+
+                }
+                else if(direction == "right")
+                {
+                    for(var i = 0; i < gridWidth; i++)
+                    {
+
+                        for(var j = gridWidth - 2; j >= 0; j = j - 1)
+                        {
+
+                            if(values[i][j] != -1)
+                            {
+                                var nEmpty = 0;
+                                var merged = false;
+
+                                for(k = 1; k < gridWidth - j; k++)
+                                {
+                                    if(values[i][j + k] == -1)
+                                    {
+                                        nEmpty++;
+                                    }
+                                    else if(values[i][j + k].value == values[i][j].value && values[i][j + k].merged == false)
+                                    {
+                                        values[i][j + k].merged = true;
+                                        document.getElementById(values[i][j].id).style.left = (j + k) * tileSize + padding + "px";
+                                        values[i][j + k].value = values[i][j + k].value * 2;
+                                        mergeElement(values[i][j].id, values[i][j + k].id, values[i][j + k].value);
+                                        values[i][j] = -1;
+                                        merged = true;
+                                        changes++;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
+                                }
+                                if(nEmpty > 0 && !merged)
+                                {
+                                    values[i][j + nEmpty] = values[i][j];
+                                    values[i][j] = -1;
+                                    changes++;
+                                    document.getElementById(values[i][j + nEmpty].id).style.left = (j + nEmpty) * tileSize + padding + "px";                            
+                                }
+                            }
+                        }
+                    }
+                } 
+                
+                if(changes > 0)
+                {
+                    console.log("generated");
+                    generateNewTile();  
+                    generated = false;               
+                }
+ 
+            }
+
+        }
+
+        function mergeElement(idDeleted, idMerged, newValue)
+        {
+            
+            setTimeout(function(){
+                
+                var incrementedElement = document.getElementById(idMerged);
+                incrementedElement.className = "";
+                incrementedElement.classList.add("v" + newValue);
+                incrementedElement.innerHTML = newValue; 
+                
+            }, 100)
+            
+            setTimeout(function(){
+                
+                var element = document.getElementById(idDeleted);
+                element.parentNode.removeChild(element);  
+                
+            }, 100)
+        }
+        
+        function generateNewTile()
+        {
+
+            setTimeout(function(){ 
+
+                var xLoc = Math.round(Math.random() * gridWidth - 0.5);
+                var yLoc = Math.round(Math.random() * gridWidth - 0.5);
+
+                while(values[yLoc][xLoc] != -1)
+                {
+                    xLoc = Math.round(Math.random() * gridWidth - 0.5);
+                    yLoc = Math.round(Math.random() * gridWidth - 0.5); 
+                }   
+
+                var tempInt = Math.round(Math.random() - 0.3);
+
+                if(tempInt == 0)
+                {
+                    values[yLoc][xLoc] = {value: 2, id: nTiles};
+                    var newTile = document.createElement("tile");
+                    var node = document.createTextNode("2");
+                    newTile.appendChild(node);                    
+                    newTile.setAttribute("id", nTiles);
+                    newTile.setAttribute("class", "v2");
+                    newTile.style.top = yLoc * tileSize + "px";
+                    newTile.style.left = xLoc * tileSize + padding + "px";
+                    var element = document.getElementById("tilesContainer");
+                    element.appendChild(newTile);
+                    nTiles++;
+                }
+                else if(tempInt == 1)
+                {
+                    values[yLoc][xLoc] = {value: 4, id: nTiles};
+                    var newTile = document.createElement("tile");
+                    var node = document.createTextNode("4");
+                    newTile.appendChild(node);
+                    newTile.setAttribute("id", nTiles);
+                    newTile.setAttribute("class", "v4");
+                    newTile.style.top = yLoc * tileSize + "px";
+                    newTile.style.left = xLoc * tileSize + padding + "px";
+                    var element = document.getElementById("tilesContainer");
+                    element.appendChild(newTile);
+                    nTiles++
+                }
+                generated = true;
+
+            }, 200);                
+         
+        }
+        
+    </script>
+    
+</body>    
+    
+</html>
